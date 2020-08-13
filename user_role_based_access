@@ -1,0 +1,64 @@
+"command line utility file, that accepts user input and initializes the system"
+import sys
+from User import user
+from Role import role
+from Privilege import privilege
+if __name__ == '__main__':
+
+
+
+    normal = role.Role('normal')
+    admin = role.Role('admin')
+
+    normal_user = user.User(roles=[normal])
+    admin_user = user.User(roles=[admin, normal])
+
+    privilege = privilege.Privilege()
+
+    privilege.read(normal, 'READ', 'somedata')
+    privilege.read(admin, 'READ', 'somedata')
+    privilege.delete(admin, 'DELETE', 'somedata')
+    privilege.write(admin, 'WRITE', 'somedata')
+
+    if sys.argv[1] == 'admin':
+        print("logged in as {0} user".format(sys.argv[1]))
+        for user_role in [role.get_name() for role in admin_user.get_roles()]:
+            if user_role == 'admin' or user_role == 'normal':
+                if privilege.writeeallowed(user_role, 'WRITE', 'somedata'):
+                    print("Write allowed for {0} user".format(user_role))
+                else:
+                    print("write not allowed for {0} user".format(user_role))
+            if user_role == 'admin' or user_role == 'normal':
+
+                if privilege.readeallowed(user_role, 'READ', 'somedata'):
+
+                    print("Read allowed allowed for {0}".format(user_role))
+                else:
+                    print("Read not allowed for {0}".format(user_role))
+            if user_role == 'admin' or user_role == 'normal':
+                if privilege.deleteallowed(user_role, 'DELETE', 'somedata'):
+                    print("Delete allowed for {0}".format(user_role))
+                else:
+                    print("Delete not allowed for {0} user".format(user_role))
+    elif sys.argv[1] == 'normal':
+        print("logged in as {0} user".format(sys.argv[1]))
+        for user_role in [role.get_name() for role in normal_user.get_roles()]:
+            if privilege.writeeallowed(user_role, 'WRITE', 'somedata'):
+                print("Write allowed")
+            else:
+                print("write not allowed for {0} user".format(user_role))
+            if privilege.deleteallowed(user_role, 'DELETE', 'somedata'):
+                print("Delete allowed")
+            else:
+                print("Delete not allowed for {0} user".format(user_role))
+            if privilege.readeallowed(user_role, 'READ', 'somedata'):
+                print("Read allowed")
+            else:
+                print("Read not allowed for {0} user".format(user_role))
+    else:
+        print("logged in as {0} user".format(sys.argv[1]))
+        print("Role not assigned yet for you")
+
+
+
+
